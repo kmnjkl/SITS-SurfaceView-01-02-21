@@ -16,12 +16,12 @@
 
     <io.github.controlwear.virtual.joystick.android.JoystickView
         android:id="@+id/joystick"
-        android:layout_width="178dp"
-        android:layout_height="184dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="5dp"
-        app:JV_backgroundColor="#009688"
-        app:JV_borderColor="#00796B"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="200dp"
+        app:JV_backgroundColor="#80009688"
+        app:JV_borderColor="#8000796B"
         app:JV_borderWidth="4dp"
         app:JV_buttonColor="#FF6E40"
         app:JV_buttonSizeRatio="20%"
