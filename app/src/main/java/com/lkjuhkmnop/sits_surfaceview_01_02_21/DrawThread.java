@@ -4,28 +4,25 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.SurfaceHolder;
 
-import io.github.controlwear.virtual.joystick.android.JoystickView;
-
 public class DrawThread extends Thread {
+    public float motionAngle;
+    public float motionStrength;
 
     private SurfaceHolder surfaceHolder;
     private MainActivity context;
 
-    public final double speed = 0.3;
+    public final double SPEED = 0.2;
 
-    Paint p = new Paint();
     Paint backgroundPaint = new Paint();
+
     private volatile boolean running = true;    //флаг для остановки потока
 
     public DrawThread(Context context, SurfaceHolder surfaceHolder) {
         this.context = (MainActivity) context;
         this.surfaceHolder = surfaceHolder;
-        p.setColor(Color.RED);
-        backgroundPaint.setColor(Color.WHITE);
-        p.setStyle(Paint.Style.FILL);
+        backgroundPaint.setColor(Color.GREEN);
     }
 
     public void requestStop() {
@@ -38,14 +35,22 @@ public class DrawThread extends Thread {
             Canvas canvas = surfaceHolder.lockCanvas();
             if (canvas != null) {
                 try {
+//                    "Draw" background
                     canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), backgroundPaint);
-                    Content.sun.x += context.moveStrength*Math.cos(context.moveAngle)*speed;
-                    Content.sun.y -= context.moveStrength*Math.sin(context.moveAngle)*speed;
-                    canvas.drawCircle(Content.sun.x,Content.sun.y,Content.sun.r,p);
+//                    Move Winnie-the-Pooh
+                    float tx = (float)(motionStrength * Math.cos(motionAngle) * SPEED);
+                    float ty = (float)(motionStrength * Math.sin(motionAngle) * SPEED);
+                    Content.winnie.moveVector(tx, ty);
+                    Content.drawAll(canvas);
                 } finally {
                     surfaceHolder.unlockCanvasAndPost(canvas);
                 }
             }
         }
+    }
+
+    public void setMotion(float angle, float strength) {
+        this.motionAngle = angle;
+        this.motionStrength = strength;
     }
 }

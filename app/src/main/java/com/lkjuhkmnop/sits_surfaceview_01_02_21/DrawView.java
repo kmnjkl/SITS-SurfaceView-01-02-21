@@ -49,4 +49,8 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
     }
+
+    public void setMotion(float angle, float strength) {
+        drawThread.setMotion(angle, strength);
+    }
 }
