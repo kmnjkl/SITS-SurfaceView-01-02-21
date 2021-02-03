@@ -4,14 +4,17 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-public class Winnie {
-    private float wx, wy, wr=100;
+public class Winnie implements Drawable{
+    private float ox, oy;
+    public int wSize = 100;
+    private int honeyIncrease = 13;
     private Paint bodyPaint = new Paint();
     private Paint eyePaint = new Paint();
+    private int maxFlag = 2;
 
     public Winnie(float wx, float wy) {
-        this.wx = wx;
-        this.wy = wy;
+        this.ox = wx;
+        this.oy = wy;
 
         bodyPaint.setColor(Color.rgb(110, 87, 63));
         bodyPaint.setStyle(Paint.Style.FILL);
@@ -21,45 +24,68 @@ public class Winnie {
     }
 
     public void moveVector(float tx, float ty) {
-        this.wx += tx;
-        this.wy -= ty;
+        this.ox += tx;
+        this.oy -= ty;
     }
 
-    public void drawWinnie(Canvas canvas) {
-        if (wx < 0 + wr) {
-            wx = 0 + wr;
+    public void draw(Canvas canvas) {
+//        Eat honey
+        this.eatHoney(canvas);
+        if ((canvas.getWidth() - (wSize + 4*honeyIncrease)*1.5 - Honey.HONEY_SIZE - ((wSize + 4*honeyIncrease)*1.5 + Honey.HONEY_SIZE)) < 0) {
+            Content.message("Oh..! Winnie is too big! Stop eating now!");
+            maxFlag--;
         }
-        if (wy < 0 + wr) {
-            wy = 0 + wr;
+        if (ox < 0 + wSize) {
+            ox = 0 + wSize;
         }
-        if (wx > canvas.getWidth() - wr) {
-            wx = canvas.getWidth() - wr;
+        if (oy < 0 + wSize) {
+            oy = 0 + wSize;
         }
-        if (wy > canvas.getHeight() - wr) {
-            wy = canvas.getHeight() - wr;
+        if (ox > canvas.getWidth() - wSize) {
+            ox = canvas.getWidth() - wSize;
+        }
+        if (oy > canvas.getHeight() - wSize) {
+            oy = canvas.getHeight() - wSize;
         }
 //        Body
-        float bx = wx, by = wy, br = wr;
+        float bx = ox, by = oy, br = wSize;
         canvas.drawCircle(bx, by, br, bodyPaint);
 //        Left "ear"
-        float elx = (float) (wx - (Math.sqrt(2) * wr / 2));
-        float ely = (float) (wy - (Math.sqrt(2) * wr / 2));
-        float elr = wr/2;
+        float elx = (float) (ox - (Math.sqrt(2) * wSize / 2));
+        float ely = (float) (oy - (Math.sqrt(2) * wSize / 2));
+        float elr = wSize /2;
         canvas.drawCircle(elx, ely, elr, bodyPaint);
 //        Right ear
-        float erx = (float) (wx + (Math.sqrt(2) * wr / 2));
-        float ery = (float) (wy - (Math.sqrt(2) * wr / 2));
-        float err = wr/2;
+        float erx = (float) (ox + (Math.sqrt(2) * wSize / 2));
+        float ery = (float) (oy - (Math.sqrt(2) * wSize / 2));
+        float err = wSize /2;
         canvas.drawCircle(erx, ery, err, bodyPaint);
 //        Left eye
-        float ylx = (float) (wx - (Math.sqrt(2) * wr / 2)/2);
-        float yly = (float) (wy - (Math.sqrt(2) * wr / 2)/2);
-        float ylr = wr/5;
+        float ylx = (float) (ox - (Math.sqrt(2) * wSize / 2)/2);
+        float yly = (float) (oy - (Math.sqrt(2) * wSize / 2)/2);
+        float ylr = wSize /5;
         canvas.drawCircle(ylx, yly, ylr, eyePaint);
 //        Right eye
-        float yrx = (float) (wx + (Math.sqrt(2) * wr / 2)/2);
-        float yry = (float) (wy - (Math.sqrt(2) * wr / 2)/2);
-        float yrr = wr/5;
+        float yrx = (float) (ox + (Math.sqrt(2) * wSize / 2)/2);
+        float yry = (float) (oy - (Math.sqrt(2) * wSize / 2)/2);
+        float yrr = wSize /5;
         canvas.drawCircle(yrx, yry, yrr, eyePaint);
+    }
+
+    private void eatHoney(Canvas canvas) {
+        for (Honey h: Content.getHoneys()) {
+            float hx = h.getOx(), hy = h.getOy();
+            if ((hx - ox)*(hx - ox) + (hy - oy)*(hy - oy) < wSize * wSize) {
+                Content.delHoney(h);
+                if (maxFlag <= 0) {
+                    Content.message("");
+                    wSize = 100;
+                    maxFlag = 2;
+                } else {
+                    wSize += honeyIncrease;
+                }
+                Content.generateHoney(canvas);
+            }
+        }
     }
 }

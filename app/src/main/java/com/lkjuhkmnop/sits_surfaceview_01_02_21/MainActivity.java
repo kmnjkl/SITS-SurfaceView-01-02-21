@@ -11,6 +11,7 @@ import io.github.controlwear.virtual.joystick.android.JoystickView;
 public class MainActivity extends AppCompatActivity {
     private DrawView drawView;
     private TextView textView;
+    private TextView msg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +20,9 @@ public class MainActivity extends AppCompatActivity {
 
         this.drawView = findViewById(R.id.myview);
         this.textView = findViewById(R.id.textview);
+        this.msg = findViewById(R.id.msg);
+
+        Content.init(this);
 
         JoystickView joystick = (JoystickView) findViewById(R.id.joystick);
         joystick.setOnMoveListener(new JoystickView.OnMoveListener() {
@@ -32,5 +36,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void message(String text) {
+        this.msg.setText(text);
     }
 }
