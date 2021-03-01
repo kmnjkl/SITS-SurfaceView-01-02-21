@@ -33,16 +33,39 @@ public class Content {
     }
 
     public static void generateHoney(Canvas canvas) {
-        float right = (float) (canvas.getWidth() - winnie.wSize*1.5 - Honey.HONEY_SIZE);
-        float left = (float) (winnie.wSize*1.5 + Honey.HONEY_SIZE);
-        float top = (float) (winnie.wSize*1.5 + Honey.HONEY_SIZE);
-        float bottom = (float) (canvas.getHeight() - winnie.wSize*1.5 - Honey.HONEY_SIZE);
+        float right = (float) (canvas.getWidth() - winnie.winnieSize *1.5 - Honey.HONEY_SIZE);
+        float left = (float) (winnie.winnieSize *1.5 + Honey.HONEY_SIZE);
+        float top = (float) (winnie.winnieSize *1.5 + Honey.HONEY_SIZE);
+        float bottom = (float) (canvas.getHeight() - winnie.winnieSize *1.5 - Honey.HONEY_SIZE);
         float hx = left + random.nextInt((int)(right - left));
         float hy = top + random.nextInt((int)(bottom - top));
+//        if (isXYUnderWinnie(hx, hy)) {
+//            float k = (float) Math.sqrt((hx - winnie.ox())*(hx - winnie.ox()) + (hy - winnie.oy())*(hy - winnie.oy()));
+//            k *= 1.01;
+//            hx = k*(hx - winnie.ox()) + winnie.ox();
+//            hy = k*(hy - winnie.oy()) + winnie.oy();
+//        }
         honeys.add(new Honey(hx, hy));
     }
 
     public static void message(String text) {
         mainActivity.message(text);
+    }
+
+    public static Honey getHoneyUnderWinnie() {
+        for (Honey h: Content.getHoneys()) {
+            float hx = h.getOx(), hy = h.getOy();
+            if ((hx - winnie.ox()) * (hx - winnie.ox()) + (hy - winnie.oy()) * (hy - winnie.oy()) < winnie.winnieSize() * winnie.winnieSize()) {
+                return h;
+            }
+        }
+        return null;
+    }
+
+    public static boolean isXYUnderWinnie(float x, float y) {
+        if ((x - winnie.ox()) * (x - winnie.ox()) + (y - winnie.oy()) * (y - winnie.oy()) < winnie.winnieSize() * winnie.winnieSize()) {
+            return true;
+        }
+        return false;
     }
 }
